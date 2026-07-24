@@ -1,0 +1,48 @@
+server:
+  port: 10005
+
+spring:
+  application:
+    name: endpoint-search
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR}
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    virtual-host: /
+
+# ========== Ribbon 核心超时配置（优先级最高，Hoxton版本必配） ==========
+ribbon:
+  # TCP连接建立超时时间
+  ConnectTimeout: 5000
+  # 读取服务端返回数据超时 8秒，拉取批量数据足够宽裕
+  ReadTimeout: 8000
+  # 关闭重试！定时同步ES千万不能自动重试，会造成ES重复插入脏数据
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 0
+  OkToRetryOnAllOperations: false
+  # 开启httpclient连接池复用
+  httpclient:
+    enabled: true
+
+# ========== Feign 超时兜底配置 ==========
+feign:
+  client:
+    config:
+      # default：全局所有调用的微服务都生效
+      default:
+        connectTimeout: 5000
+        readTimeout: 8000
+  # 启用Apache http客户端（你之前开启的保留）
+  httpclient:
+    enabled: true
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST:127.0.0.1}
+  port: ${ELASTICSEARCH_PORT:9200}
+  scheme: ${ELASTICSEARCH_SCHEME:http}
+redis:
+  host: ${REDIS_HOST:127.0.0.1}
+  port: ${REDIS_PORT:6379}
+  password: ${REDIS_PASSWORD:}

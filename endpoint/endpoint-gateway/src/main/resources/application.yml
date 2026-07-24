@@ -1,0 +1,57 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: endpoint-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR}
+    gateway:
+      routes:
+        - id: endpoint-home-route   #首页模块路由
+          uri: lb://endpoint-home
+          predicates:
+            - Path=/api/home/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+        - id: endpoint-author-route   #作者模块路由
+          uri: lb://endpoint-author
+          predicates:
+            - Path=/api/author/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: endpoint-book-route    #小说模块
+          uri: lb://endpoint-book
+          predicates:
+            - Path=/api/book/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: endpoint-member-route
+          uri: lb://endpoint-member   #会员模块
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: endpoint-third-party-route    #第三方模块
+          uri: lb://endpoint-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: endpoint-search-route    #检索服务
+          uri: lb://endpoint-search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - SwaggerFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}

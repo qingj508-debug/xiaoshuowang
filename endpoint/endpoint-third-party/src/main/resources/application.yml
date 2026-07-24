@@ -1,0 +1,53 @@
+server:
+  port: 10006
+spring:
+  application:
+    name: endpoint-third-party
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/endpoint_payorder?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR}
+    tencentcloud:
+      appid: 1400763786
+      secret-id: ${TENCENT_CLOUD_SECRET_ID}
+      secret-key: ${TENCENT_CLOUD_SECRET_KEY}
+      sign: 从零开始的摩旅
+      template-id: 874865
+
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+aliyun:
+  oss:
+    file:
+      endpoint: oss-cn-guangzhou.aliyuncs.com
+      bucketName: ${ALIYUN_OSS_BUCKET_NAME:endpoint-oss1}
+      accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID}
+      accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
+
+alipay:
+  #请填写您的AppId，例如：2019091767145019
+  app-id: ${ALIPAY_APP_ID}
+  #请填写您的应用私钥，例如：MIIEvQIBADANB
+  merchant-private-key: ${ALIPAY_MERCHANT_PRIVATE_KEY}
+  #支付宝公钥字符串
+  alipay_public_key: ${ALIPAY_PUBLIC_KEY}
+  #填写您的支付类接口异步通知接收服务地址，例如：https://www:test:com/callback:
+  notify-url: http://endpoint.free.svipss.top/api/thirdparty/orderPay/notify
+  #支付成功跳转页面
+  return-url: http://192.168.10.200/#/pay/successed
+  #签名方式
+  sign-type: RSA2
+  #编码
+  charset: utf-8
+  #支付宝网关
+  gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
