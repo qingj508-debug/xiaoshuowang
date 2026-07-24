@@ -1,0 +1,24 @@
+﻿# Maven
+target/
+*.jar
+*.war
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.idea/
+*.iml
+
+# 敏感文件
+.env.local
+
+# 日志
+logs/
+*.log
+
+# 临时
+*.tmp
+.DS_Store
+Thumbs.db
