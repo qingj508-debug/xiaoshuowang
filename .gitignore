@@ -14,6 +14,9 @@ dist/
 # 环境变量
 .env.local
 
+# 明文密钥（用 Sealed Secrets 替代）
+deploy/secret.yaml
+
 # 日志
 logs/
 *.log
