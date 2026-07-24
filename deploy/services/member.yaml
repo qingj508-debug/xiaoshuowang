@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 10004
           envFrom:
+            - configMapRef:
+                name: endpoint-config
             - secretRef:
                 name: endpoint-secrets
 ---
