@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endpoint-member
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endpoint-member
+  template:
+    metadata:
+      labels:
+        app: endpoint-member
+    spec:
+      containers:
+        - name: member
+          image: harbor.你的域名.com/endpoint-novel/member:latest
+          ports:
+            - containerPort: 10004
+          envFrom:
+            - secretRef:
+                name: endpoint-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-member-svc
+  namespace: endpoint
+spec:
+  selector:
+    app: endpoint-member
+  ports:
+    - port: 10004
+      targetPort: 10004

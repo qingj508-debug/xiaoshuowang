@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endpoint-third-party
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endpoint-third-party
+  template:
+    metadata:
+      labels:
+        app: endpoint-third-party
+    spec:
+      containers:
+        - name: third-party
+          image: harbor.你的域名.com/endpoint-novel/third-party:latest
+          ports:
+            - containerPort: 10006
+          envFrom:
+            - secretRef:
+                name: endpoint-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-third-party-svc
+  namespace: endpoint
+spec:
+  selector:
+    app: endpoint-third-party
+  ports:
+    - port: 10006
+      targetPort: 10006

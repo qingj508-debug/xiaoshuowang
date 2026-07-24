@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endpoint-author
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endpoint-author
+  template:
+    metadata:
+      labels:
+        app: endpoint-author
+    spec:
+      containers:
+        - name: author
+          image: harbor.你的域名.com/endpoint-novel/author:latest
+          ports:
+            - containerPort: 10001
+          envFrom:
+            - secretRef:
+                name: endpoint-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-author-svc
+  namespace: endpoint
+spec:
+  selector:
+    app: endpoint-author
+  ports:
+    - port: 10001
+      targetPort: 10001

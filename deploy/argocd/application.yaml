@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: endpoint-novel
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/qingj508-debug/xiaoshuowang.git
+    path: deploy
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: endpoint
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

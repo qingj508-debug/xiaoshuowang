@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: endpoint-book
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: endpoint-book
+  template:
+    metadata:
+      labels:
+        app: endpoint-book
+    spec:
+      containers:
+        - name: book
+          image: harbor.你的域名.com/endpoint-novel/book:latest
+          ports:
+            - containerPort: 10002
+          envFrom:
+            - secretRef:
+                name: endpoint-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: endpoint-book-svc
+  namespace: endpoint
+spec:
+  selector:
+    app: endpoint-book
+  ports:
+    - port: 10002
+      targetPort: 10002
