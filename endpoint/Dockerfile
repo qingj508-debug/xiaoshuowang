@@ -1,4 +1,4 @@
-FROM maven:3.8-openjdk-8 AS build
+FROM maven:3.8-eclipse-temurin-8 AS build
 ARG SERVICE_NAME
 WORKDIR /app
 COPY pom.xml .
@@ -14,7 +14,7 @@ RUN mvn dependency:go-offline -pl endpoint-common -B -q
 COPY . .
 RUN mvn package -DskipTests -pl ${SERVICE_NAME} -am -q
 
-FROM openjdk:8-jre-alpine
+FROM eclipse-temurin:8-jre-alpine
 ARG SERVICE_NAME
 COPY --from=build /app/${SERVICE_NAME}/target/*.jar app.jar
 EXPOSE 8080
