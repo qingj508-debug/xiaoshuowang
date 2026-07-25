@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: harbor.你的域名.com/endpoint-novel/frontend:latest
+          image: 192.168.10.102/xiaoshuowang/frontend:latest
           ports:
             - containerPort: 80
 ---
@@ -31,4 +31,4 @@ spec:
   ports:
     - port: 80
       targetPort: 80
-      nodePort: 30080
+      nodePort: 31080

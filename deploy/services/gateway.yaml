@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: harbor.你的域名.com/endpoint-novel/gateway:latest
+          image: 192.168.10.102/xiaoshuowang/gateway:latest
           ports:
             - containerPort: 8888
           envFrom:

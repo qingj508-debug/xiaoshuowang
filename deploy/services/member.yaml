@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: member
-          image: harbor.你的域名.com/endpoint-novel/member:latest
+          image: 192.168.10.102/xiaoshuowang/member:latest
           ports:
             - containerPort: 10004
           envFrom:

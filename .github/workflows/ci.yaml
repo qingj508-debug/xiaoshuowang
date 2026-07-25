@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  HARBOR_REGISTRY: hadoop102
-  HARBOR_PROJECT: endpoint-novel
+  HARBOR_REGISTRY: 192.168.10.102
+  HARBOR_PROJECT: xiaoshuowang
   HARBOR_USERNAME: admin
   HARBOR_PASSWORD: Harbor12345
 

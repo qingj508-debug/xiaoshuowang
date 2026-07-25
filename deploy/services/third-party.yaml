@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: third-party
-          image: harbor.你的域名.com/endpoint-novel/third-party:latest
+          image: 192.168.10.102/xiaoshuowang/third-party:latest
           ports:
             - containerPort: 10006
           envFrom:
