@@ -6,8 +6,13 @@ on:
   workflow_dispatch:
 
 env:
-  HARBOR_REGISTRY: harbor.你的域名.com
+  # Harbor镜像仓库地址，直接写主机名，不需要加/harbor路径
+  HARBOR_REGISTRY: hadoop102
+  # Harbor项目名，需与Web界面中创建的项目一致
   HARBOR_PROJECT: endpoint-novel
+  # 硬编码凭证（仅测试环境使用）
+  HARBOR_USERNAME: admin
+  HARBOR_PASSWORD: Harbor12345
 
 jobs:
   # ===== 后端 7 个微服务 =====
@@ -22,7 +27,7 @@ jobs:
           - home
           - search
           - third-party
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,8 +36,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.HARBOR_REGISTRY }}
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
+          username: ${{ env.HARBOR_USERNAME }}
+          password: ${{ env.HARBOR_PASSWORD }}
 
       - name: Build and Push
         uses: docker/build-push-action@v5
@@ -48,7 +53,7 @@ jobs:
 
   # ===== 前端 =====
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,8 +62,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.HARBOR_REGISTRY }}
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
+          username: ${{ env.HARBOR_USERNAME }}
+          password: ${{ env.HARBOR_PASSWORD }}
 
       - name: Build and Push
         uses: docker/build-push-action@v5
