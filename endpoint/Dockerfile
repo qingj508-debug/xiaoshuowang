@@ -1,6 +1,14 @@
 FROM maven:3.8-eclipse-temurin-8 AS build
 ARG SERVICE_NAME
 WORKDIR /app
+
+# 配置阿里云 Maven 镜像，避免访问 Maven Central 网络问题
+RUN mkdir -p /root/.m2 && echo '<?xml version="1.0" encoding="UTF-8"?>\
+<settings><mirrors><mirror>\
+<id>aliyun</id><mirrorOf>*</mirrorOf>\
+<url>https://maven.aliyun.com/repository/public</url>\
+</mirror></mirrors></settings>' > /root/.m2/settings.xml
+
 COPY pom.xml .
 COPY endpoint-common/pom.xml endpoint-common/
 COPY endpoint-book/pom.xml endpoint-book/
