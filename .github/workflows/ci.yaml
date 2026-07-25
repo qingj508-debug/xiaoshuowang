@@ -54,6 +54,7 @@ jobs:
 
   # ===== 前端 =====
   frontend:
+    needs: backend
     runs-on:
       - self-hosted
       - linux
