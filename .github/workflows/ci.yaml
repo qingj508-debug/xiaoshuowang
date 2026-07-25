@@ -15,6 +15,7 @@ jobs:
   # ===== 后端 7 个微服务 =====
   backend:
     strategy:
+      max-parallel: 1
       matrix:
         service:
           - gateway
@@ -24,7 +25,10 @@ jobs:
           - home
           - search
           - third-party
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,7 +54,10 @@ jobs:
 
   # ===== 前端 =====
   frontend:
-    runs-on: self-hosted
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
