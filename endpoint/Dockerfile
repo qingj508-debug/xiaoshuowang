@@ -2,14 +2,23 @@ FROM maven:3.8-eclipse-temurin-8 AS build
 ARG SERVICE_NAME
 ARG http_proxy
 ARG https_proxy
+ENV http_proxy=$http_proxy
+ENV https_proxy=$https_proxy
 WORKDIR /app
 
-# 配置阿里云 Maven 镜像，避免访问 Maven Central 网络问题
+# 配置 Maven 代理 + HTTP 镜像
 RUN mkdir -p /root/.m2 && echo '<?xml version="1.0" encoding="UTF-8"?>\
-<settings><mirrors><mirror>\
+<settings>\
+<mirrors><mirror>\
 <id>aliyun</id><mirrorOf>*</mirrorOf>\
-<url>https://maven.aliyun.com/repository/public</url>\
-</mirror></mirrors></settings>' > /root/.m2/settings.xml
+<url>http://maven.aliyun.com/nexus/content/groups/public</url>\
+</mirror></mirrors>\
+<proxies><proxy>\
+<id>clash</id><active>true</active><protocol>http</protocol>\
+<host>192.168.10.1</host><port>7897</port>\
+<nonProxyHosts>localhost|127.0.0.1|192.168.*</nonProxyHosts>\
+</proxy></proxies>\
+</settings>' > /root/.m2/settings.xml
 
 COPY pom.xml .
 COPY endpoint-common/pom.xml endpoint-common/
