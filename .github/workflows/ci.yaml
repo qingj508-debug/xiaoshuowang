@@ -12,19 +12,8 @@ env:
   HARBOR_PASSWORD: Harbor12345
 
 jobs:
-  # ===== 后端 7 个微服务 =====
+  # ===== 后端 7 个微服务（单 job 串行，不用 matrix） =====
   backend:
-    strategy:
-      max-parallel: 1
-      matrix:
-        service:
-          - gateway
-          - book
-          - author
-          - member
-          - home
-          - search
-          - third-party
     runs-on:
       - self-hosted
       - linux
@@ -42,14 +31,21 @@ jobs:
 
       - name: Build and Push
         run: |
-          docker build \
-            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:latest \
-            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:${{ github.sha }} \
-            --build-arg SERVICE_NAME=endpoint-${{ matrix.service }} \
-            -f ./endpoint/Dockerfile \
-            ./endpoint
-          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:latest
-          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:${{ github.sha }}
+          SERVICES="gateway book author member home search third-party"
+          for SERVICE in $SERVICES; do
+            echo "===== Building $SERVICE ====="
+            docker build \
+              -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:latest \
+              -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:${{ github.sha }} \
+              --build-arg SERVICE_NAME=endpoint-${SERVICE} \
+              --build-arg http_proxy \
+              --build-arg https_proxy \
+              -f ./endpoint/Dockerfile \
+              ./endpoint
+            docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:latest
+            docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:${{ github.sha }}
+            echo "===== $SERVICE done ====="
+          done
 
   # ===== 前端 =====
   frontend:
@@ -75,6 +71,8 @@ jobs:
             -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest \
             -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }} \
             --build-arg VUE_APP_API_BASE_URL=http://192.168.10.200/api \
+            --build-arg http_proxy \
+            --build-arg https_proxy \
             -f ./endpoint-fiction-web/Dockerfile \
             ./endpoint-fiction-web
           docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest
