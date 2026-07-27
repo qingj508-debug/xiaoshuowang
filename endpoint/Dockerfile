@@ -17,6 +17,9 @@ RUN mkdir -p /root/.m2 && echo '<?xml version="1.0" encoding="UTF-8"?>\
 </mirror></mirrors>\
 </settings>' > /root/.m2/settings.xml
 
+# 禁用 wagon 连接池 + 失败重试，避免长时间下载时复用过期 TLS 连接导致 SSL 握手失败
+ENV MAVEN_ARGS="-Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.count=5 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dhttps.protocols=TLSv1.2"
+
 COPY pom.xml .
 COPY endpoint-common/pom.xml endpoint-common/
 COPY endpoint-book/pom.xml endpoint-book/
@@ -26,9 +29,9 @@ COPY endpoint-home/pom.xml endpoint-home/
 COPY endpoint-search/pom.xml endpoint-search/
 COPY endpoint-third-party/pom.xml endpoint-third-party/
 COPY endpoint-gateway/pom.xml endpoint-gateway/
-RUN mvn dependency:go-offline -pl endpoint-common -B -q
+RUN mvn dependency:go-offline -pl endpoint-common -B -q $MAVEN_ARGS
 COPY . .
-RUN mvn package -DskipTests -pl ${SERVICE_NAME} -am -q
+RUN mvn package -DskipTests -pl ${SERVICE_NAME} -am -q $MAVEN_ARGS
 
 FROM eclipse-temurin:8-jre-alpine
 ARG SERVICE_NAME
