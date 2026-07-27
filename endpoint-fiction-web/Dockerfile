@@ -1,5 +1,7 @@
 FROM node:16-alpine AS build
 ARG VUE_APP_API_BASE_URL
+ARG http_proxy
+ARG https_proxy
 ENV VUE_APP_API_BASE_URL=${VUE_APP_API_BASE_URL}
 WORKDIR /app
 COPY package*.json ./
