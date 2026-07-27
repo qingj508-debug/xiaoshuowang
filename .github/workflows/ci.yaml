@@ -30,6 +30,11 @@ jobs:
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
+
       - name: Build and Push
         run: |
           SERVICES="gateway book author member home search third-party"
@@ -66,6 +71,11 @@ jobs:
           registry: ${{ env.HARBOR_REGISTRY }}
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
 
       - name: Build and Push
         run: |
