@@ -40,28 +40,16 @@ jobs:
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
-      #   with:
-      #     buildkitd-config-inline: |
-      #       [registry."docker.io"]
-      #         mirrors = ["docker.m.daocloud.io", "docker.1ms.run"]
-         - name: Set up Docker Buildx
-           uses: docker/setup-buildx-action@v3
-           with:
-             driver: docker
-
       - name: Build and Push
-        uses: docker/build-push-action@v5
-        with:
-          context: ./endpoint
-          file: ./endpoint/Dockerfile
-          build-args: |
-            SERVICE_NAME=endpoint-${{ matrix.service }}
-          push: true
-          tags: |
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:latest
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:${{ github.sha }}
+        run: |
+          docker build \
+            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:latest \
+            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:${{ github.sha }} \
+            --build-arg SERVICE_NAME=endpoint-${{ matrix.service }} \
+            -f ./endpoint/Dockerfile \
+            ./endpoint
+          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:latest
+          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ matrix.service }}:${{ github.sha }}
 
   # ===== 前端 =====
   frontend:
@@ -81,21 +69,13 @@ jobs:
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-config-inline: |
-            [registry."docker.io"]
-              mirrors = ["docker.m.daocloud.io", "docker.1ms.run"]
-
       - name: Build and Push
-        uses: docker/build-push-action@v5
-        with:
-          context: ./endpoint-fiction-web
-          file: ./endpoint-fiction-web/Dockerfile
-          build-args: |
-            VUE_APP_API_BASE_URL=http://192.168.10.200/api
-          push: true
-          tags: |
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest
-            ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }}
+        run: |
+          docker build \
+            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest \
+            -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }} \
+            --build-arg VUE_APP_API_BASE_URL=http://192.168.10.200/api \
+            -f ./endpoint-fiction-web/Dockerfile \
+            ./endpoint-fiction-web
+          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest
+          docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }}
