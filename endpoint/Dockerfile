@@ -29,14 +29,16 @@ COPY endpoint-home/pom.xml endpoint-home/
 COPY endpoint-search/pom.xml endpoint-search/
 COPY endpoint-third-party/pom.xml endpoint-third-party/
 COPY endpoint-gateway/pom.xml endpoint-gateway/
-# mvn 失败自动重试（每次重跑从已下载缓存继续），对抗间歇性网络掩断
-RUN for i in 1 2 3 4 5; do \
+# mvn 失败自动重试 + BuildKit 缓存挂载（Maven 仓库跨构建持久化，失败也能累积下载进度）
+RUN --mount=type=cache,target=/root/.m2/repository \
+    for i in 1 2 3 4 5; do \
       mvn dependency:go-offline -pl endpoint-common -B -q $MAVEN_ARGS && break; \
       [ $i -eq 5 ] && exit 1; \
       echo "== attempt $i failed, retrying =="; sleep 5; \
     done
 COPY . .
-RUN for i in 1 2 3 4 5; do \
+RUN --mount=type=cache,target=/root/.m2/repository \
+    for i in 1 2 3 4 5; do \
       mvn package -DskipTests -pl ${SERVICE_NAME} -am -q $MAVEN_ARGS && break; \
       [ $i -eq 5 ] && exit 1; \
       echo "== attempt $i failed, retrying =="; sleep 5; \
