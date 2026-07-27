@@ -2,22 +2,19 @@ FROM maven:3.8-eclipse-temurin-8 AS build
 ARG SERVICE_NAME
 ARG http_proxy
 ARG https_proxy
+ARG no_proxy
 ENV http_proxy=$http_proxy
 ENV https_proxy=$https_proxy
+ENV no_proxy=$no_proxy,maven.aliyun.com
 WORKDIR /app
 
-# 配置 Maven 代理 + HTTP 镜像
+# 配置阿里云 Maven 镜像（国内直连，不走代理）
 RUN mkdir -p /root/.m2 && echo '<?xml version="1.0" encoding="UTF-8"?>\
 <settings>\
 <mirrors><mirror>\
 <id>aliyun</id><mirrorOf>*</mirrorOf>\
-<url>http://maven.aliyun.com/nexus/content/groups/public</url>\
+<url>https://maven.aliyun.com/repository/public</url>\
 </mirror></mirrors>\
-<proxies><proxy>\
-<id>clash</id><active>true</active><protocol>http</protocol>\
-<host>192.168.10.1</host><port>7897</port>\
-<nonProxyHosts>localhost|127.0.0.1|192.168.*</nonProxyHosts>\
-</proxy></proxies>\
 </settings>' > /root/.m2/settings.xml
 
 COPY pom.xml .

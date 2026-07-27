@@ -40,6 +40,7 @@ jobs:
               --build-arg SERVICE_NAME=endpoint-${SERVICE} \
               --build-arg http_proxy \
               --build-arg https_proxy \
+              --build-arg no_proxy=maven.aliyun.com,localhost,127.0.0.1,192.168.10.102 \
               -f ./endpoint/Dockerfile \
               ./endpoint
             docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:latest
@@ -73,6 +74,7 @@ jobs:
             --build-arg VUE_APP_API_BASE_URL=http://192.168.10.200/api \
             --build-arg http_proxy \
             --build-arg https_proxy \
+            --build-arg no_proxy=registry.npmmirror.com,localhost,127.0.0.1,192.168.10.102 \
             -f ./endpoint-fiction-web/Dockerfile \
             ./endpoint-fiction-web
           docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest
