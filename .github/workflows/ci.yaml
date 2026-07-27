@@ -10,7 +10,6 @@ env:
   HARBOR_PROJECT: xiaoshuowang
   HARBOR_USERNAME: admin
   HARBOR_PASSWORD: Harbor12345
-  DOCKER_BUILDKIT: "1"
 
 jobs:
   # ===== 后端 7 个微服务（单 job 串行，不用 matrix） =====
@@ -30,10 +29,21 @@ jobs:
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker
+      - name: Build Jars
+        run: |
+          docker run --rm \
+            -v maven-repo:/root/.m2/repository \
+            -v "$PWD/endpoint:/app" \
+            -w /app \
+            maven:3.8-eclipse-temurin-8 \
+            sh -c 'mkdir -p /root/.m2; \
+              echo "<settings><mirrors><mirror><id>aliyun</id><mirrorOf>*</mirrorOf><url>https://maven.aliyun.com/repository/public</url></mirror></mirrors></settings>" > /root/.m2/settings.xml; \
+              MAVEN_ARGS="-Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.count=5 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dhttps.protocols=TLSv1.2"; \
+              for i in 1 2 3 4 5; do \
+                mvn package -DskipTests -B -q $MAVEN_ARGS && break; \
+                [ $i -eq 5 ] && exit 1; \
+                echo "== attempt $i failed, retrying =="; sleep 5; \
+              done'
 
       - name: Build and Push
         run: |
@@ -44,9 +54,6 @@ jobs:
               -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:latest \
               -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:${{ github.sha }} \
               --build-arg SERVICE_NAME=endpoint-${SERVICE} \
-              --build-arg http_proxy \
-              --build-arg https_proxy \
-              --build-arg no_proxy=maven.aliyun.com,localhost,127.0.0.1,192.168.10.102 \
               -f ./endpoint/Dockerfile \
               ./endpoint
             docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${SERVICE}:latest
@@ -71,11 +78,6 @@ jobs:
           registry: ${{ env.HARBOR_REGISTRY }}
           username: ${{ env.HARBOR_USERNAME }}
           password: ${{ env.HARBOR_PASSWORD }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker
 
       - name: Build and Push
         run: |
