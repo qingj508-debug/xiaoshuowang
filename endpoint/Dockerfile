@@ -1,5 +1,7 @@
 FROM maven:3.8-eclipse-temurin-8 AS build
 ARG SERVICE_NAME
+ARG http_proxy
+ARG https_proxy
 WORKDIR /app
 
 # 配置阿里云 Maven 镜像，避免访问 Maven Central 网络问题
