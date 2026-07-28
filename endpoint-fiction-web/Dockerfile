@@ -7,8 +7,17 @@ ENV no_proxy=$no_proxy,registry.npmmirror.com
 ENV VUE_APP_API_BASE_URL=${VUE_APP_API_BASE_URL}
 WORKDIR /app
 COPY package*.json ./
-# 使用国内 npm 镜像源（直连，不走代理）
-RUN npm config set registry https://registry.npmmirror.com && npm ci
+# 使用国内 npm 镜像源（直连，不走代理）+ 加大超时 + 失败重试（npm 缓存在重试间累积）
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000 && \
+    npm config set fetch-timeout 600000 && \
+    for i in 1 2 3 4 5; do \
+      npm ci && break; \
+      [ $i -eq 5 ] && exit 1; \
+      echo "== npm ci attempt $i failed, retrying =="; sleep 5; \
+    done
 COPY . .
 RUN npm run build
 
