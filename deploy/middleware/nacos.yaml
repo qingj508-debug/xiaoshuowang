@@ -1,0 +1,46 @@
+---
+# Nacos 1.4.2 与 Spring Cloud Alibaba 2.2.6 的 nacos-client 版本完全匹配
+# standalone 模式 + 内嵌 derby 存储，注册数据无需持久化（服务重启会自动重新注册）
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+        - name: nacos
+          image: docker.m.daocloud.io/nacos/nacos-server:1.4.2
+          env:
+            - name: MODE
+              value: standalone
+            - name: PREFER_HOST_MODE
+              value: hostname
+            - name: JVM_XMS
+              value: 256m
+            - name: JVM_XMX
+              value: 256m
+            - name: JVM_XMN
+              value: 128m
+          ports:
+            - containerPort: 8848
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+  namespace: endpoint
+spec:
+  selector:
+    app: nacos
+  ports:
+    - port: 8848
+      targetPort: 8848

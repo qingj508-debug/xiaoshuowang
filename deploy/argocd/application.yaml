@@ -9,6 +9,8 @@ spec:
     repoURL: https://github.com/qingj508-debug/xiaoshuowang.git
     path: deploy
     targetRevision: main
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: endpoint

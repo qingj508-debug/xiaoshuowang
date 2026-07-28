@@ -19,10 +19,10 @@ spec:
           ports:
             - containerPort: 10003
           envFrom:
-            - configMapRef:
-                name: endpoint-config
             - secretRef:
                 name: endpoint-secrets
+            - configMapRef:
+                name: endpoint-config
 ---
 apiVersion: v1
 kind: Service

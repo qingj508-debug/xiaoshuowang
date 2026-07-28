@@ -1,0 +1,59 @@
+---
+# 后端未配置 RabbitMQ 用户名密码，Spring 默认用 guest/guest。
+# RabbitMQ 默认禁止 guest 远程登录，这里通过配置解除限制（仅集群内部访问）。
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: endpoint
+data:
+  rabbitmq.conf: |
+    loopback_users = none
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: endpoint
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      # 固定 hostname，保证 rabbit 节点名稳定
+      hostname: rabbitmq
+      containers:
+        - name: rabbitmq
+          image: docker.m.daocloud.io/library/rabbitmq:3.9-management-alpine
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          volumeMounts:
+            - name: config
+              mountPath: /etc/rabbitmq/rabbitmq.conf
+              subPath: rabbitmq.conf
+      volumes:
+        - name: config
+          configMap:
+            name: rabbitmq-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: endpoint
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: management
+      port: 15672
+      targetPort: 15672
