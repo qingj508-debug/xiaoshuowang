@@ -16,6 +16,7 @@ spec:
       containers:
         - name: member
           image: 192.168.10.102/xiaoshuowang/member:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10004
           envFrom:

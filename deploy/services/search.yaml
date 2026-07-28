@@ -16,6 +16,7 @@ spec:
       containers:
         - name: search
           image: 192.168.10.102/xiaoshuowang/search:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10005
           envFrom:

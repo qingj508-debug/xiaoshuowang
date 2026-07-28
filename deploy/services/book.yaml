@@ -16,6 +16,7 @@ spec:
       containers:
         - name: book
           image: 192.168.10.102/xiaoshuowang/book:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10002
           envFrom:

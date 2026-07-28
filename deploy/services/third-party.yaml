@@ -16,6 +16,7 @@ spec:
       containers:
         - name: third-party
           image: 192.168.10.102/xiaoshuowang/third-party:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10006
           envFrom:
