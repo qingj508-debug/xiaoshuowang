@@ -84,7 +84,7 @@ jobs:
           docker build \
             -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest \
             -t ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }} \
-            --build-arg VUE_APP_API_BASE_URL=http://192.168.10.200/api \
+            --build-arg VUE_APP_API_BASE_URL=/api \
             -f ./endpoint-fiction-web/Dockerfile \
             ./endpoint-fiction-web
           docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest

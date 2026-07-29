@@ -5,7 +5,7 @@ import {getToken ,removeToken,removeNickName} from '@/utils/auth'
 import JSONBIG from 'json-bigint';
 
 // axios.create 方法创建一个axios实例, 在实例当中进行统一配置,所用通过该实例发送请求 使用同一配置
-axios.defaults.baseURL = 'http://localhost:8888/api'
+axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL || '/api'
 axios.defaults.timeout = 10000
 axios.defaults.withCredentials = true
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
