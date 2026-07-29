@@ -23,6 +23,10 @@ public class EndPointCorsConfig {
         List<String> list = new ArrayList<>();
         list.add("http://localhost:9999");
         list.add("http://192.168.0.107:9999");
+        // K8s 部署：前端 NodePort 访问源
+        list.add("http://192.168.10.102:31080");
+        // 网关 NodePort 直连源
+        list.add("http://192.168.10.102:30888");
         config.setAllowedOrigins(list);
         //config.addAllowedOrigin("http://endpoint.com:9999");
         //config.addAllowedOrigin("http://localhost:9999");
