@@ -66,7 +66,7 @@ public class BookToEsScheduled {
             //获取更新的小说
             List<BookEsModel> books = bookFeignService.queryBookByUpdateTimeByPage(lastDate, 100).getData();
             for (BookEsModel bookEsModel : books) {
-                //searchService.importToEs(bookEsModel);
+                searchService.importToEs(bookEsModel);
                 String lastIndexUpdateTime = bookEsModel.getLastIndexUpdateTime();//记录最后更新时间
                 System.out.println("------->>>>"+lastIndexUpdateTime);
                 lastDate = LocalDateTime.parse(lastIndexUpdateTime);

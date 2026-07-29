@@ -73,7 +73,8 @@ public class SearchServiceImpl implements SearchService {
                 bulkRequest.add(indexRequest);
             }
             BulkResponse bulk = highLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            flag = bulk.hasFailures();
+            //hasFailures()为true表示存在失败，取反才是导入成功
+            flag = !bulk.hasFailures();
         }
         return flag;
     }
