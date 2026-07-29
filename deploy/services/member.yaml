@@ -35,6 +35,16 @@ spec:
                 name: endpoint-secrets
             - configMapRef:
                 name: endpoint-config
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xms256m -Xmx512m -XX:MaxMetaspaceSize=256m"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
 ---
 apiVersion: v1
 kind: Service

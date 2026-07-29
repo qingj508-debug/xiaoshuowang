@@ -9,6 +9,10 @@ metadata:
 data:
   rabbitmq.conf: |
     loopback_users = none
+  # conf.d 分层配置：内存水位按绝对值限制，与容器 limit 512Mi 匹配
+  # （默认按宿主机内存 40% 计算会远超 limit 导致 OOMKill）
+  20-limits.conf: |
+    vm_memory_high_watermark.absolute = 300MB
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,10 +37,20 @@ spec:
           ports:
             - containerPort: 5672
             - containerPort: 15672
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: config
               mountPath: /etc/rabbitmq/rabbitmq.conf
               subPath: rabbitmq.conf
+            - name: config
+              mountPath: /etc/rabbitmq/conf.d/20-limits.conf
+              subPath: 20-limits.conf
       volumes:
         - name: config
           configMap:
