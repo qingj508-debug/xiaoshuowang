@@ -4,26 +4,26 @@ metadata:
   name: endpoint-config
   namespace: endpoint
 data:
-  # 服务地址统一用 ClusterIP / FQDN，绕开 Alpine musl 短域名解析 bug
+  # 镜像已换 glibc 底座，服务地址统一用 K8s Service 短域名（企业标准姿势）
   # ===== Nacos =====
-  NACOS_SERVER_ADDR: "10.111.23.68:8848"
+  NACOS_SERVER_ADDR: "nacos-service:8848"
 
   # ===== MySQL =====
-  MYSQL_HOST: "mysql-service.endpoint.svc.cluster.local"
+  MYSQL_HOST: "mysql-service"
   MYSQL_PORT: "3306"
   MYSQL_USERNAME: "root"
 
   # ===== Redis =====
-  REDIS_HOST: "10.106.49.94"
+  REDIS_HOST: "redis-service"
   REDIS_PORT: "6379"
 
   # ===== RabbitMQ =====
-  RABBITMQ_HOST: "rabbitmq-service.endpoint.svc.cluster.local"
+  RABBITMQ_HOST: "rabbitmq-service"
   RABBITMQ_PORT: "5672"
   RABBITMQ_VIRTUAL_HOST: "/"
 
   # ===== Elasticsearch =====
-  ELASTICSEARCH_HOST: "elasticsearch-service.endpoint.svc.cluster.local"
+  ELASTICSEARCH_HOST: "elasticsearch-service"
   ELASTICSEARCH_PORT: "9200"
   ELASTICSEARCH_SCHEME: "http"
 

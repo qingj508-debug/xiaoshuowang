@@ -1,4 +1,4 @@
-FROM node:16-alpine AS build
+FROM docker.m.daocloud.io/library/node:16-alpine AS build
 ARG VUE_APP_API_BASE_URL
 ARG http_proxy
 ARG https_proxy
@@ -21,7 +21,7 @@ RUN npm config set registry https://registry.npmmirror.com && \
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM docker.m.daocloud.io/library/nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
