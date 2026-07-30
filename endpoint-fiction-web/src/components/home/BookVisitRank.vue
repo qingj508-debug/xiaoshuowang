@@ -2,7 +2,7 @@
   <div id="bookrank1_ShowBookRank">
         <div class="rightBox">
           <div class="title cf">
-            <h3 class="on">点击榜单</h3>
+            <h3 class="on">点击榜</h3>
           </div>
           <div class="rightList">
             <ul id="clickRankBooks">
