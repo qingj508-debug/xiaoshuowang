@@ -26,7 +26,7 @@ spec:
               done
       containers:
         - name: search
-          image: 192.168.10.102/xiaoshuowang/search:latest
+          image: 192.168.10.102/xiaoshuowang/search:cb2771fbe3a977bb83a39c63879d578f5f277982
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10005
