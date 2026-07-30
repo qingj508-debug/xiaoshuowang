@@ -32,10 +32,11 @@ jobs:
       - name: Build Jars
         run: |
           docker run --rm \
+            --dns 223.5.5.5 --dns 114.114.114.114 \
             -v maven-repo:/root/.m2/repository \
             -v "$PWD/endpoint:/app" \
             -w /app \
-            maven:3.8-eclipse-temurin-8 \
+            192.168.10.102/xiaoshuowang/maven:3.8-eclipse-temurin-8 \
             sh -c 'mkdir -p /root/.m2; \
               echo "<settings><mirrors><mirror><id>aliyun</id><mirrorOf>*</mirrorOf><url>https://maven.aliyun.com/repository/public</url></mirror></mirrors></settings>" > /root/.m2/settings.xml; \
               MAVEN_ARGS="-Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.count=5 -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dhttps.protocols=TLSv1.2"; \
