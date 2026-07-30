@@ -89,3 +89,45 @@ jobs:
             ./endpoint-fiction-web
           docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:latest
           docker push ${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/frontend:${{ github.sha }}
+
+  # ===== 自动更新 deploy YAML 中的镜像标签 → ArgoCD 自动同步 =====
+  update-deploy:
+    needs: [backend, frontend]
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update image tags in deploy YAML
+        run: |
+          SHA="${{ github.sha }}"
+
+          # 7 个后端微服务（匹配任意旧 tag，首次是 :latest，之后是上一次的 sha）
+          for svc in gateway book author member home search third-party; do
+            yaml="deploy/services/${svc}.yaml"
+            sed -i "s|image: .*/${svc}:.*|image: 192.168.10.102/xiaoshuowang/${svc}:${SHA}|g" "$yaml"
+            echo "  ${yaml} -> ${svc}:${SHA}"
+          done
+
+          # 前端
+          sed -i "s|image: .*/frontend:.*|image: 192.168.10.102/xiaoshuowang/frontend:${SHA}|g" deploy/frontend.yaml
+          echo "  deploy/frontend.yaml -> frontend:${SHA}"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add deploy/
+          if git diff --cached --quiet; then
+            echo "No changes, skipping commit."
+          else
+            # [skip ci] 防止 push 回 main 再次触发本 workflow 导致无限循环
+            git commit -m "chore(deploy): bump images to ${{ github.sha }} [skip ci]"
+            git push origin main
+            echo "Pushed! ArgoCD will auto-sync."
+          fi
