@@ -26,7 +26,7 @@ spec:
               done
       containers:
         - name: home
-          image: 192.168.10.102/xiaoshuowang/home:c1a4f9516c9359d649a86e11d94d03bdb5b27db6
+          image: 192.168.10.102/xiaoshuowang/home:1b58bbc4c474edbdb6e3e9e977e761b719224d73
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10003
