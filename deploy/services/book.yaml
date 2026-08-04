@@ -26,7 +26,7 @@ spec:
               done
       containers:
         - name: book
-          image: 192.168.10.102/xiaoshuowang/book:5d6b46489704328c8bbcc02e53b4bf8846cb4f18
+          image: 192.168.10.102/xiaoshuowang/book:c767426f071bbb267db8e6453fc611c5743d4448
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10002
