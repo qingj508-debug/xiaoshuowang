@@ -33,6 +33,12 @@ aliyun:
       bucketName: ${ALIYUN_OSS_BUCKET_NAME:endpoint-oss1}
       accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID}
       accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
+  # 阿里云短信（登录/注册验证码），敏感 AK/SK 走 SealedSecret 环境变量；未配置时跳过发送不影响启动
+  sms:
+    access-key-id: ${ALIYUN_SMS_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_SMS_ACCESS_KEY_SECRET:}
+    sign-name: ${ALIYUN_SMS_SIGN_NAME:粤嵌科技}
+    template-code: ${ALIYUN_SMS_TEMPLATE_CODE:SMS_165366012}
 
 alipay:
   #请填写您的AppId，例如：2019091767145019
