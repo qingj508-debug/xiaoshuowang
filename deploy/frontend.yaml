@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 192.168.10.102/xiaoshuowang/frontend:1b58bbc4c474edbdb6e3e9e977e761b719224d73
+          image: 192.168.10.102/xiaoshuowang/frontend:5d6b46489704328c8bbcc02e53b4bf8846cb4f18
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

@@ -26,7 +26,7 @@ spec:
               done
       containers:
         - name: gateway
-          image: 192.168.10.102/xiaoshuowang/gateway:1b58bbc4c474edbdb6e3e9e977e761b719224d73
+          image: 192.168.10.102/xiaoshuowang/gateway:5d6b46489704328c8bbcc02e53b4bf8846cb4f18
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
